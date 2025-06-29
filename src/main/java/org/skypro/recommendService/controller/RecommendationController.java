@@ -22,13 +22,13 @@ public class RecommendationController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Recommendation>> getRecommendation(@PathVariable UUID userId) {
+    public List<Recommendation> getRecommendation(@PathVariable UUID userId) {
 
         List<Recommendation> allRecommendations = new ArrayList<>();
         for (RecommendationRuleSet service : service) {
             service.getRecommendation(userId).ifPresent(allRecommendations::addAll);
         }
 
-        return ResponseEntity.ok(allRecommendations);
+        return allRecommendations;
     }
 }
