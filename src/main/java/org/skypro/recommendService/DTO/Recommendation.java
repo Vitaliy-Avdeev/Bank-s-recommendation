@@ -1,8 +1,11 @@
 package org.skypro.recommendService.DTO;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
 
+@Getter
 public class Recommendation {
     private final String name;
     private final UUID id;
@@ -14,15 +17,4 @@ public class Recommendation {
         this.text = text;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public UUID getId() {
-        return id;
-    }
 }
