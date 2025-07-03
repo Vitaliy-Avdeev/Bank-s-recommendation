@@ -2,8 +2,6 @@ package org.skypro.BankS.component;
 
 import org.skypro.BankS.DTO.RecommendationObject;
 import org.skypro.BankS.repository.RecommendationsRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,6 +15,12 @@ public class Invest500Recommendation implements RecommendationRuleSet{
     public Invest500Recommendation(RecommendationsRepository recommendationsRepository) {
         this.recommendationsRepository = recommendationsRepository;
     }
+    /**
+     * Метод проверяет подходит ли банковский продукт "Invest 500" заданному клиенту.
+     *
+     * @param id - ID клиента.
+     * @return если проверка прошла успешно, продукт будет включен в список рекомендаций клиента.
+     */
 
     @Override
     public Optional<List<RecommendationObject>> getRecommendation(UUID id) {

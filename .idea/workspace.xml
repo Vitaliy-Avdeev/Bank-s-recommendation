@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b57724-38ae-410b-8092-9828e94c73a7" name="Changes" comment="First task update">
+      <change beforePath="$PROJECT_DIR$/.idea/BankS-master.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BankS-master.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/component/Invest500Recommendation.java" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/component/Invest500Recommendation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/component/SimpleCreditRecommendation.java" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/component/SimpleCreditRecommendation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/component/TopSavingRecommendation.java" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/component/TopSavingRecommendation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/repository/RecommendationsRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/repository/RecommendationsRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/service/RecommendationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/BankS/src/main/java/org/skypro/BankS/service/RecommendationService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,18 +24,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Vitaliy-Avdeev"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Vitaliy-Avdeev&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Vitaliy-Avdeev/Bank-s-recommendation.git",
-    "accountId": "00ce6060-47fd-4d6c-be09-355aa4b4ba1d"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Vitaliy-Avdeev/Bank-s-recommendation.git&quot;,
+    &quot;accountId&quot;: &quot;00ce6060-47fd-4d6c-be09-355aa4b4ba1d&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -35,16 +44,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BankSApplication.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "HW-1",
-    "last_opened_file_path": "C:/Users/Avdeev Vitaliy/IdeaProjects/Service Bank"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BankSApplication.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#4 on HW-1&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Avdeev Vitaliy/IdeaProjects/Service Bank&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="BankSApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.skypro.BankS.BankSApplication" />

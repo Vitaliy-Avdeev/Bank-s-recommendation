@@ -21,88 +21,81 @@ public class RecommendationsRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<List<RecommendationObject>> checkInvest500(UUID id){
-        UUID productId = UUID.fromString("147f6a0f-3b91-413b-ab99-87f081d60d5a");
+    /**
+     * Внутренний метод, в котором мы получаем id для конкретного продукта и формируем для него рекомендацию Invest 500 с набором правил.
+     * Выполняется проверка по каждому набору правил (всего в системе описано три правила:
+     * Пользователь использует как минимум один продукт с типом DEBIT,
+     * Пользователь не использует продукты с типом INVEST,
+     * Сумма пополнений продуктов с типом SAVING больше 1000 ₽.),
+     *
+     * @param id - id клиента.
+     * @return - возвращаем рекомендацию.
+     */
 
-        Boolean result1 = jdbcTemplate.queryForObject(
+    public Optional<List<RecommendationObject>> checkInvest500(UUID id) {
+        UUID productId = UUID.fromString("147f6a0f-3b91-413b-ab99-87f081d60d5a");
+        // Выполняем запросы
+        Boolean result1 = jdbcTemplate.queryForObject( // Правило - пользователь использует как минимум один продукт с типом DEBIT.
                 "SELECT count(*) > 0 FROM TRANSACTIONS t " +
                         "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
                         "WHERE t.USER_ID = ? and p.TYPE = 'DEBIT'",
                 Boolean.class,
                 id);
-        Boolean result2 = jdbcTemplate.queryForObject(
+        Boolean result2 = jdbcTemplate.queryForObject( // Правило - пользователь не использует продукты с типом INVEST.
                 "SELECT count(*) = 0 FROM TRANSACTIONS t " +
                         "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
                         "WHERE t.USER_ID = ? and p.TYPE = 'INVEST'",
                 Boolean.class,
                 id);
-        Boolean result3 = jdbcTemplate.queryForObject(
+        Boolean result3 = jdbcTemplate.queryForObject( // Правило - Сумма пополнений продуктов с типом SAVING больше 1000 ₽.
                 "SELECT SUM(AMOUNT) > 1000 FROM TRANSACTIONS t " +
                         "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
                         "WHERE t.USER_ID = ? and p.TYPE = 'SAVING' AND t.TYPE = 'DEPOSIT'",
                 Boolean.class,
                 id);
 
-        if (Boolean.TRUE.equals(result1) && Boolean.TRUE.equals(result2) && Boolean.TRUE.equals(result3)){
+        if (Boolean.TRUE.equals(result1) && Boolean.TRUE.equals(result2) && Boolean.TRUE.equals(result3)) {  // Формируем рекомендацию
             return Optional.of(List.of(
                     new RecommendationObject(productId, "Invest 500", INVEST500)
-                    ));
-        }
-        return Optional.empty();
-    }
-
-    public Optional<List<RecommendationObject>> checkTopSaving(UUID id){
-        UUID productId = UUID.fromString("59efc529-2fff-41af-baff-90ccd7402925");
-
-        Boolean result1 = jdbcTemplate.queryForObject(
-                "SELECT count(*) > 0 FROM TRANSACTIONS t " +
-                        "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
-                        "WHERE t.user_id = ? and p.TYPE = 'DEBIT'",
-                Boolean.class,
-                id);
-        Boolean result2_1 = jdbcTemplate.queryForObject(
-                "SELECT sum(t.AMOUNT) >= 50000 FROM TRANSACTIONS t " +
-                        "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
-                        "WHERE t.USER_ID = ? and p.TYPE = 'DEBIT' AND t.TYPE = 'DEPOSIT'",
-                Boolean.class,
-                id);
-        Boolean result2_2 = jdbcTemplate.queryForObject(
-                "SELECT sum(t.AMOUNT) >= 50000 FROM TRANSACTIONS t " +
-                        "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
-                        "WHERE t.USER_ID = ? and p.TYPE = 'SAVING' AND t.TYPE = 'DEPOSIT'",
-                Boolean.class,
-                id);
-        Boolean result3 = jdbcTemplate.queryForObject(
-                "SELECT total_deposits > total_withdraws AS is_deposit_greater " +
-                        "FROM (SELECT " +
-                                "SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN t.AMOUNT ELSE 0 END) AS total_deposits, " +
-                                "SUM(CASE WHEN t.TYPE = 'WITHDRAW' THEN t.AMOUNT ELSE 0 END) AS total_withdraws " +
-                                "FROM TRANSACTIONS t " +
-                                "JOIN PRODUCTS p ON t.PRODUCT_ID = p.ID " +
-                                "WHERE p.TYPE = 'DEBIT' AND t.USER_ID = ? " +
-                        ") sub",
-                Boolean.class,
-                id);
-
-        if (Boolean.TRUE.equals(result1) && (Boolean.TRUE.equals(result2_1) || Boolean.TRUE.equals(result2_2))
-                && Boolean.TRUE.equals(result3)){
-            return Optional.of(List.of(
-                    new RecommendationObject(productId, "Top Saving", TOP_SAVING)
             ));
         }
         return Optional.empty();
     }
 
-    public Optional<List<RecommendationObject>> checkSimpleCredit(UUID id){
-        UUID productId = UUID.fromString("ab138afb-f3ba-4a93-b74f-0fcee86d447f");
+    /**
+     * Внутренний метод, в котором мы получаем id для конкретного продукта и формируем для него рекомендацию Top Saving с набором правил.
+     * Выполняется проверка по каждому набору правил, всего в системе описано четыре правила:
+     * Пользователь использует как минимум один продукт с типом DEBIT,
+     * Сумма пополнений по всем продуктам типа DEBIT больше или равна 50 000 ₽
+     * ИЛИ Сумма пополнений по всем продуктам типа SAVING больше или равна 50 000 ₽.,
+     * Сумма пополнений по всем продуктам типа DEBIT больше, чем сумма трат по всем продуктам типа DEBIT.
+     *
+     * @param id - id клиента.
+     * @return - возвращаем рекомендацию.
+     */
 
-        Boolean result1 = jdbcTemplate.queryForObject(
-                "SELECT count(*) = 0 FROM TRANSACTIONS t " +
+    public Optional<List<RecommendationObject>> checkTopSaving(UUID id) {
+        UUID productId = UUID.fromString("59efc529-2fff-41af-baff-90ccd7402925");
+        // Выполняем запросы
+        Boolean result1 = jdbcTemplate.queryForObject( // Пользователь использует как минимум один продукт с типом DEBIT.
+                "SELECT count(*) > 0 FROM TRANSACTIONS t " +
                         "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
-                        "WHERE t.user_id = ? and p.TYPE = 'CREDIT'",
+                        "WHERE t.user_id = ? and p.TYPE = 'DEBIT'",
                 Boolean.class,
                 id);
-        Boolean result2 = jdbcTemplate.queryForObject(
+        Boolean result2_1 = jdbcTemplate.queryForObject( //Сумма пополнений по всем продуктам типа DEBIT больше или равна 50 000 ₽
+                "SELECT sum(t.AMOUNT) >= 50000 FROM TRANSACTIONS t " +
+                        "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
+                        "WHERE t.USER_ID = ? and p.TYPE = 'DEBIT' AND t.TYPE = 'DEPOSIT'",
+                Boolean.class,
+                id);
+        Boolean result2_2 = jdbcTemplate.queryForObject( // ИЛИ Сумма пополнений по всем продуктам типа SAVING больше или равна 50 000 ₽.
+                "SELECT sum(t.AMOUNT) >= 50000 FROM TRANSACTIONS t " +
+                        "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
+                        "WHERE t.USER_ID = ? and p.TYPE = 'SAVING' AND t.TYPE = 'DEPOSIT'",
+                Boolean.class,
+                id);
+        Boolean result3 = jdbcTemplate.queryForObject( // Сумма пополнений по всем продуктам типа DEBIT больше, чем сумма трат по всем продуктам типа DEBIT.
                 "SELECT total_deposits > total_withdraws AS is_deposit_greater " +
                         "FROM (SELECT " +
                         "SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN t.AMOUNT ELSE 0 END) AS total_deposits, " +
@@ -113,14 +106,55 @@ public class RecommendationsRepository {
                         ") sub",
                 Boolean.class,
                 id);
-        Boolean result3 = jdbcTemplate.queryForObject(
+
+        if (Boolean.TRUE.equals(result1) && (Boolean.TRUE.equals(result2_1) || Boolean.TRUE.equals(result2_2))  // Формируем рекомендацию
+                && Boolean.TRUE.equals(result3)) {
+            return Optional.of(List.of(
+                    new RecommendationObject(productId, "Top Saving", TOP_SAVING)
+            ));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Внутренний метод, в котором мы получаем id для конкретного продукта и формируем для него рекомендацию Simple Credit с набором правил.
+     * Выполняется проверка по каждому набору правил, всего в системе описано три правила:
+     * Пользователь не использует продукты с типом CREDIT,
+     * Сумма пополнений по всем продуктам типа DEBIT больше, чем сумма трат по всем продуктам типа DEBIT.
+     * Сумма трат по всем продуктам типа DEBIT больше, чем 100 000 ₽.
+     *
+     * @param id - id клиента.
+     * @return - возвращаем рекомендацию.
+     */
+
+    public Optional<List<RecommendationObject>> checkSimpleCredit(UUID id) {
+        UUID productId = UUID.fromString("ab138afb-f3ba-4a93-b74f-0fcee86d447f");
+        // Выполняем запросы
+        Boolean result1 = jdbcTemplate.queryForObject( // Пользователь не использует продукты с типом CREDIT.
+                "SELECT count(*) = 0 FROM TRANSACTIONS t " +
+                        "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
+                        "WHERE t.user_id = ? and p.TYPE = 'CREDIT'",
+                Boolean.class,
+                id);
+        Boolean result2 = jdbcTemplate.queryForObject( // Сумма пополнений по всем продуктам типа DEBIT больше, чем сумма трат по всем продуктам типа DEBIT.
+                "SELECT total_deposits > total_withdraws AS is_deposit_greater " +
+                        "FROM (SELECT " +
+                        "SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN t.AMOUNT ELSE 0 END) AS total_deposits, " +
+                        "SUM(CASE WHEN t.TYPE = 'WITHDRAW' THEN t.AMOUNT ELSE 0 END) AS total_withdraws " +
+                        "FROM TRANSACTIONS t " +
+                        "JOIN PRODUCTS p ON t.PRODUCT_ID = p.ID " +
+                        "WHERE p.TYPE = 'DEBIT' AND t.USER_ID = ? " +
+                        ") sub",
+                Boolean.class,
+                id);
+        Boolean result3 = jdbcTemplate.queryForObject( // Сумма трат по всем продуктам типа DEBIT больше, чем 100 000 ₽.
                 "SELECT sum(t.AMOUNT) > 100000 FROM TRANSACTIONS t " +
                         "join PRODUCTS p on t.PRODUCT_ID = p.ID " +
                         "WHERE t.USER_ID = ? and p.TYPE = 'DEBIT' AND t.TYPE = 'WITHDRAW'",
                 Boolean.class,
                 id);
 
-        if (Boolean.TRUE.equals(result1) && Boolean.TRUE.equals(result2) && Boolean.TRUE.equals(result3)){
+        if (Boolean.TRUE.equals(result1) && Boolean.TRUE.equals(result2) && Boolean.TRUE.equals(result3)) {  // Формируем рекомендацию
             return Optional.of(List.of(
                     new RecommendationObject(id, "Simple credit", SIMPLE_CREDIT)
             ));
@@ -128,3 +162,6 @@ public class RecommendationsRepository {
         return Optional.empty();
     }
 }
+
+
+

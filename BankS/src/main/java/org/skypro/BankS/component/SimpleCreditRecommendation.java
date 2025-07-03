@@ -15,6 +15,12 @@ public class SimpleCreditRecommendation implements RecommendationRuleSet{
     public SimpleCreditRecommendation(RecommendationsRepository recommendationsRepository) {
         this.recommendationsRepository = recommendationsRepository;
     }
+    /**
+     * Метод проверяет подходит ли банковский продукт "Простой кредит" заданному клиенту.
+     *
+     * @param id - ID клиента.
+     * @return если проверка прошла успешно, продукт будет включен в список рекомендаций клиента.
+     */
 
     @Override
     public Optional<List<RecommendationObject>> getRecommendation(UUID id) {
