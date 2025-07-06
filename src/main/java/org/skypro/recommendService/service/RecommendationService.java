@@ -1,6 +1,7 @@
 package org.skypro.recommendService.service;
 
-import org.skypro.recommendService.DTO.Recommendation;
+import org.skypro.recommendService.DTO.RecommendationObject;
+import org.skypro.recommendService.component.RecommendationRuleSet;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,15 +10,15 @@ import java.util.UUID;
 
 @Service
 public class RecommendationService {
-    private final List<RecommendationRuleSet> ruleSets;
+    private final List<RecommendationRuleSet> recommendations;
 
-    public RecommendationService(List<RecommendationRuleSet> ruleSets) {
-        this.ruleSets = ruleSets;
+    public RecommendationService(List<RecommendationRuleSet> recommendations) {
+        this.recommendations = recommendations;
     }
 
-    public List<Recommendation> getListRecommendation(UUID userId) {
-        List<Recommendation> allRecommendations = new ArrayList<>();
-        for (RecommendationRuleSet ruleSet : ruleSets) {
+    public List<RecommendationObject> getListOfRecommendation(UUID userId) {
+        List<RecommendationObject> allRecommendations = new ArrayList<>();
+        for (RecommendationRuleSet ruleSet : recommendations) {
             ruleSet.getRecommendation(userId).ifPresent(allRecommendations::addAll);
         }
         return allRecommendations;

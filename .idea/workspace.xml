@@ -5,16 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4d2cf564-845b-468b-9fcd-b091da8f7a83" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/transaction.mv.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/DTO/DynamicRecommendationRuleDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/DTO/QueryObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/DTO/RecommendationObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/component/Invest500Recommendation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/component/RecommendationRuleSet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/component/SimpleCreditRecommendation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/component/TopSavingRecommendation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/controller/DynamicRecommendationRuleController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/model/DynamicRecommendationRule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/repository/DynamicRecommendationRuleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/repository/RecommendationsRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/DynamicRecommendationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/DTO/Recommendation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/DTO/Recommendation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/repositoty/RecommendationsRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/repositoty/RecommendationsRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/DTO/Recommendation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/config/RecommendationsDataSourceConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/configuration/RecommendationsDataSourceConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/config/TemporaryStorageConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/controller/RecommendationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/controller/RecommendationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/repositoty/RecommendationsRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/RecommendationInvest500.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/RecommendationRuleSet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/RecommendationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/RecommendationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/RecommendationSimpleCredit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/skypro/recommendService/service/RecommendationTopSaving.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transaction.trace.db" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,12 +54,19 @@
     &quot;assignee&quot;: &quot;Vitaliy-Avdeev&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Vitaliy-Avdeev/Bank-s-recommendation.git&quot;,
-    &quot;accountId&quot;: &quot;00ce6060-47fd-4d6c-be09-355aa4b4ba1d&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Vitaliy-Avdeev/Bank-s-recommendation.git",
+    "accountId": "8505165a-1aae-4f94-bf7c-689171e87b2e"
   }
-}</component>
+}]]></component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -63,7 +87,7 @@
     "Spring Boot.RecommendServiceApplication.executor": "Run",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/andre/IdeaProjects/Bank-s-recommendation",
+    "last_opened_file_path": "C:/Users/andre/IdeaProjects/Bank-s-recommendation/src/main/java/org/skypro/recommendService",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -74,7 +98,8 @@
   "keyToStringList": {
     "DatabaseDriversLRU": [
       "h2",
-      "mysql"
+      "mysql",
+      "postgresql"
     ]
   }
 }]]></component>
@@ -83,6 +108,7 @@
       <recent name="org.skypro.recommendService.DTO" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\andre\IdeaProjects\Bank-s-recommendation\src\main\java\org\skypro\recommendService" />
       <recent name="C:\Users\andre\IdeaProjects\Bank-s-recommendation" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -94,7 +120,7 @@
   </component>
   <component name="RunManager">
     <configuration name="RecommendServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="ServiceBank" />
+      <module name="recommendService" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.skypro.recommendService.RecommendServiceApplication" />
       <extension name="coverage">
         <pattern>
@@ -129,7 +155,11 @@
       <option name="presentableId" value="Default" />
       <updated>1750862053538</updated>
       <workItem from="1750862055029" duration="17030000" />
+      <workItem from="1751803362600" duration="303000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
