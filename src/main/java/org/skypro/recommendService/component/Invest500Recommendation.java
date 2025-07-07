@@ -15,6 +15,12 @@ public class Invest500Recommendation implements RecommendationRuleSet{
     public Invest500Recommendation(RecommendationsRepository recommendationsRepository) {
         this.recommendationsRepository = recommendationsRepository;
     }
+    /**
+     * Метод проверяет подходит ли банковский продукт "Invest 500" заданному клиенту.
+     *
+     * @param id - ID клиента.
+     * @return если проверка прошла успешно, продукт будет включен в список рекомендаций клиента.
+     */
 
     @Override
     public Optional<List<RecommendationObject>> getRecommendation(UUID id) {

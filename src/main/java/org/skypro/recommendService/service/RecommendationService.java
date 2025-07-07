@@ -15,6 +15,15 @@ public class RecommendationService {
     public RecommendationService(List<RecommendationRuleSet> recommendations) {
         this.recommendations = recommendations;
     }
+    /**
+     * Внутренний метод, в котором мы получаем id пользователя и возвращаем список рекомендаций для этого пользователя
+     * (в зависимости от того, подошел ли какой-то продукт пользователю).
+     * Выполняется проверка по каждому продукту (всего в системе описано три продукта:
+     * Invest500, SimpleCredit, TopSaving), в случае успешной проверки продукт попадает в рекомендации.
+     *
+     * @param userId - id клиента.
+     * @return - возвращаем список рекомендаций.
+     */
 
     public List<RecommendationObject> getListOfRecommendation(UUID userId) {
         List<RecommendationObject> allRecommendations = new ArrayList<>();

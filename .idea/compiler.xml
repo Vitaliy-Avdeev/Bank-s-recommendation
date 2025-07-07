@@ -8,11 +8,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="recommendService" />
-        <module name="ServiceBank" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="BankS" target="17" />
+      <module name="ServiceBank" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
