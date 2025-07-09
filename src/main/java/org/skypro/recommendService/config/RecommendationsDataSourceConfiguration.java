@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 @Configuration
 public class RecommendationsDataSourceConfiguration {
+
     @Bean(name = "recommendationsDataSource")
     public DataSource recommendationsDataSource(@Value("${application.recommendations-db.url}") String recommendationsUrl) {
         var dataSource = new HikariDataSource();
@@ -21,12 +22,14 @@ public class RecommendationsDataSourceConfiguration {
         dataSource.setReadOnly(true);
         return dataSource;
     }
+
     @Bean(name = "recommendationsJdbcTemplate")
     public JdbcTemplate recommendationsJdbcTemplate(
             @Qualifier("recommendationsDataSource") DataSource dataSource
     ) {
         return new JdbcTemplate(dataSource);
     }
+
     @Primary
     @Bean(name = "defaultDataSource")
     public DataSource defaultDataSource(DataSourceProperties properties) {
