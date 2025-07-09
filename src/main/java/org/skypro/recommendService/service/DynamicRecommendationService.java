@@ -84,8 +84,12 @@ public class DynamicRecommendationService {
         }
         return query.isNegate() ? !result : result;
     }
-
-
+    /**
+     * Запрос, в котором мы проверям является ли пользователь USER_OF, для которого ведется поиск рекомендаций.
+     * @param userId
+     * @param productType
+     * @return
+     */
     private boolean checkUserOf(UUID userId, String productType) {
         String key = userId + ":" + productType;
         Boolean cached = userOfCache.getIfPresent(key);
@@ -100,6 +104,12 @@ public class DynamicRecommendationService {
         userOfCache.put(key, result);
         return Boolean.TRUE.equals(result);
     }
+    /**
+     * Запрос проверяет, является ли пользователь ACTIVE_USER_OF, для которого ведется поиск рекомендаций
+     * @param userId
+     * @param productType
+     * @return
+     */
 
     private boolean checkActiveUserOf(UUID userId, String productType) {
         String key = userId + ":" + productType;
@@ -115,6 +125,12 @@ public class DynamicRecommendationService {
         activeUserOfCache.put(key, result);
         return Boolean.TRUE.equals(result);
     }
+    /**
+     * Запрос сравнение суммы транзакций с константой — TRANSACTION_SUM_COMPARE
+     * @param userId
+     * @param args
+     * @return
+     */
 
     private boolean checkTransactionSumCompare(UUID userId, List<String> args) {
         String productType = args.get(0);
@@ -144,6 +160,12 @@ public class DynamicRecommendationService {
         transactionCompareCache.put(key, result);
         return result;
     }
+    /**
+     * Запрос cравнение суммы пополнений с тратами по всем продуктам одного типа — TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW
+     * @param userId
+     * @param args
+     * @return
+     */
 
     private boolean checkTransactionSumCompareDepositWithdraw(UUID userId, List<String> args) {
         String productType = args.get(0);

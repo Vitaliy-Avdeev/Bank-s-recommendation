@@ -1,0 +1,115 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /rule/new:
+    post:
+      tags:
+        - dynamic-recommendation-rule-controller
+      operationId: createRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DynamicRecommendationRuleDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /rule:
+    get:
+      tags:
+        - dynamic-recommendation-rule-controller
+      operationId: getAllRules
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /recommendation/{userId}:
+    get:
+      tags:
+        - recommendation-controller
+      operationId: getListOfRecommendation
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/RecommendationObject"
+  /rule/{productId}:
+    delete:
+      tags:
+        - dynamic-recommendation-rule-controller
+      operationId: deleteRule
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    DynamicRecommendationRuleDto:
+      type: object
+      properties:
+        rule:
+          type: array
+          items:
+            $ref: "#/components/schemas/QueryObject"
+        product_id:
+          type: string
+        product_name:
+          type: string
+        product_text:
+          type: string
+    QueryObject:
+      type: object
+      properties:
+        query:
+          type: string
+        arguments:
+          type: array
+          items:
+            type: string
+        negate:
+          type: boolean
+    RecommendationObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        text:
+          type: string
