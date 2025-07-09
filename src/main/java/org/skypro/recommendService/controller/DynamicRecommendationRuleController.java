@@ -10,7 +10,9 @@ import org.skypro.recommendService.repository.DynamicRecommendationRuleRepositor
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +30,6 @@ public class DynamicRecommendationRuleController {
     }
 
     @PostMapping("/new")
-    @Transactional
     public ResponseEntity<?> createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
         DynamicRecommendationRule entity = new DynamicRecommendationRule();
         entity.setProductId(dto.getProductId());
@@ -37,7 +38,13 @@ public class DynamicRecommendationRuleController {
         entity.setRule(objectMapper.writeValueAsString(dto.getRule()));
         DynamicRecommendationRule saved = repository.save(entity);
 
-        return ResponseEntity.ok(saved);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(saved.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(saved);
     }
 
     @GetMapping()
