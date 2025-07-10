@@ -24,6 +24,18 @@ paths:
             '*/*':
               schema:
                 type: object
+  /management/clear-caches:
+    post:
+      tags:
+        - cache-controller
+      operationId: clearCaches
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
   /rule:
     get:
       tags:
@@ -59,6 +71,18 @@ paths:
                   type: array
                   items:
                     $ref: "#/components/schemas/RecommendationObject"
+  /management/info:
+    get:
+      tags:
+        - cache-controller
+      operationId: getServiceInfo
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
   /rule/{productId}:
     delete:
       tags:
