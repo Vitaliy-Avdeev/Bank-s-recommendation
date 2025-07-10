@@ -16,7 +16,7 @@ public class DynamicRecommendationRule {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", nullable = false)
-    private String  id;
+    private String id;
 
     @Column(name = "product_name", nullable = false)
     private String productName;

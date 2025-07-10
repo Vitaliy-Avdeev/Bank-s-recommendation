@@ -158,4 +158,15 @@ public class RecommendationsRepository {
         }
         return Optional.empty();
     }
+
+    public String getUserNameById(UUID id){
+        if (id != null) {
+            String firstName = jdbcTemplate.queryForObject("SELECT FIRST_NAME FROM USERS WHERE ID = ?", String.class, id);
+            String lastName = jdbcTemplate.queryForObject("SELECT LAST_NAME FROM USERS WHERE ID = ?", String.class, id);
+
+            return firstName + " " + lastName;
+        } else {
+            return null;
+        }
+    }
 }
