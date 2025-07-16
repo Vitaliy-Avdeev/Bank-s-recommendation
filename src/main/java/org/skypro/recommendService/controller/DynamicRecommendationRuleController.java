@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.skypro.recommendService.DTO.DynamicRecommendationRuleDto;
 import org.skypro.recommendService.DTO.QueryObject;
 import org.skypro.recommendService.model.DynamicRecommendationRule;
+import org.skypro.recommendService.model.DynamicRuleStat;
 import org.skypro.recommendService.repository.DynamicRecommendationRuleRepository;
+import org.skypro.recommendService.repository.DynamicRuleStatRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,10 +24,12 @@ public class DynamicRecommendationRuleController {
 
     private final DynamicRecommendationRuleRepository repository;
     private final ObjectMapper objectMapper;
+    private final DynamicRuleStatRepository dynamicRuleStatRepository;
 
-    public DynamicRecommendationRuleController(DynamicRecommendationRuleRepository repository, ObjectMapper objectMapper) {
+    public DynamicRecommendationRuleController(DynamicRecommendationRuleRepository repository, ObjectMapper objectMapper, DynamicRuleStatRepository dynamicRuleStatRepository) {
         this.repository = repository;
         this.objectMapper = objectMapper;
+        this.dynamicRuleStatRepository = dynamicRuleStatRepository;
     }
 
     @PostMapping("/new")
@@ -36,6 +40,8 @@ public class DynamicRecommendationRuleController {
         entity.setProductText(dto.getProductText());
         entity.setRule(objectMapper.writeValueAsString(dto.getRule()));
         DynamicRecommendationRule saved = repository.save(entity);
+
+        dynamicRuleStatRepository.save(new DynamicRuleStat(entity.getId(), 0));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -57,19 +63,32 @@ public class DynamicRecommendationRuleController {
                 dto.setProductText(r.getProductText());
                 dto.setProductName(r.getProductName());
                 dto.setRule(queries);
+
+                int count = dynamicRuleStatRepository.countByRuleId(r.getId());
+                dynamicRuleStatRepository.save(new DynamicRuleStat(r.getId(), count + 1));
+
                 return dto;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }).collect(Collectors.toList());
+        }).toList();
         return ResponseEntity.ok(Map.of("data", dtos));
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteRule(@PathVariable String productId) {
+        String id = repository.getIdByProductId(productId);
+        dynamicRuleStatRepository.deleteByRuleId(id);
         repository.deleteByProductId(productId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/stat")
+    public ResponseEntity<?> getRuleStat() {
+        List<DynamicRuleStat> rules = dynamicRuleStatRepository.findAll();
+        return ResponseEntity.ok(Map.of("stats", rules));
+    }
+
 }
 
 
