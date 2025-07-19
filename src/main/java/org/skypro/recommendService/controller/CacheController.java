@@ -1,35 +1,37 @@
 package org.skypro.recommendService.controller;
 
-import com.github.benmanes.caffeine.cache.Cache;
+import org.skypro.recommendService.DTO.InfoDTO;
+import org.skypro.recommendService.service.ManagementService;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/management")
 public class CacheController {
-    private final Cache<String, Boolean> queryResultCache;
+    private final ManagementService managementService;
     private final BuildProperties buildProperties;
 
-    public CacheController(Cache<String, Boolean> queryResultCache, BuildProperties buildProperties) {
-        this.queryResultCache = queryResultCache;
+    public CacheController(ManagementService managementService, BuildProperties buildProperties) {
+        this.managementService = managementService;
         this.buildProperties = buildProperties;
     }
+
     @PostMapping("/clear-caches")
-    public ResponseEntity<?> clearCaches() {
-        queryResultCache.invalidateAll();
-        return ResponseEntity.ok().body(Map.of("status", "Cache cleared"));
+    public List<Void> clearCaches() {
+        managementService.clearCache();
+        return List.of();
     }
+
     @GetMapping("/info")
-    public ResponseEntity<?> getServiceInfo() {
-        return ResponseEntity.ok().body(Map.of(
-                "name", buildProperties.getName(),
-                "version", buildProperties.getVersion()
+    public List<InfoDTO> getServiceInfo() {
+        return Collections.singletonList(new InfoDTO(
+                buildProperties.getName(),
+                buildProperties.getVersion()
         ));
+
+
     }
+
 }
