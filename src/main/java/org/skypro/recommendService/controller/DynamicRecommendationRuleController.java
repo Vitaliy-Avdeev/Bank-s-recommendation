@@ -33,7 +33,7 @@ public class DynamicRecommendationRuleController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<?> createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
+    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
         DynamicRecommendationRule entity = new DynamicRecommendationRule();
         entity.setProductId(dto.getProductId());
         entity.setProductName(dto.getProductName());
@@ -49,11 +49,11 @@ public class DynamicRecommendationRuleController {
                 .buildAndExpand(saved.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(saved);
+        return saved;
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllRules() throws JsonProcessingException {
+    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules() throws JsonProcessingException {
         List<DynamicRecommendationRule> rules = repository.findAll();
         List<DynamicRecommendationRuleDto> dtos = rules.stream().map(r -> {
             try {
@@ -72,7 +72,7 @@ public class DynamicRecommendationRuleController {
                 throw new RuntimeException(e);
             }
         }).toList();
-        return ResponseEntity.ok(Map.of("data", dtos));
+        return Map.of("data", dtos);
     }
 
     @DeleteMapping("/{productId}")
@@ -84,9 +84,9 @@ public class DynamicRecommendationRuleController {
     }
 
     @GetMapping("/stat")
-    public ResponseEntity<?> getRuleStat() {
+    public Map<String, List<DynamicRuleStat>> getRuleStat() {
         List<DynamicRuleStat> rules = dynamicRuleStatRepository.findAll();
-        return ResponseEntity.ok(Map.of("stats", rules));
+        return Map.of("stats", rules);
     }
 
 }
