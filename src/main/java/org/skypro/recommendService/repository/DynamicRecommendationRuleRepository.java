@@ -14,6 +14,5 @@ public interface DynamicRecommendationRuleRepository extends JpaRepository<Dynam
     void deleteByProductId(String product_id);
     @Query(value = "select id from dynamic_recommendation_rules where product_id = :product_id limit 1", nativeQuery = true)
     String getIdByProductId(String product_id);
-
 }
 

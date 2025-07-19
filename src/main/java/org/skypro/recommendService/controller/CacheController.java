@@ -30,8 +30,5 @@ public class CacheController {
                 buildProperties.getName(),
                 buildProperties.getVersion()
         ));
-
-
     }
-
 }
