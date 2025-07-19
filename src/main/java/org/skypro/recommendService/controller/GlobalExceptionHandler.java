@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", "JSON mapping error", "message", ex.getMessage()));
     }
 
-    @ExceptionHandler(Exception.class) // Отлавливает все остальные исключения
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("error", "Internal server error", "message", ex.getMessage()));
