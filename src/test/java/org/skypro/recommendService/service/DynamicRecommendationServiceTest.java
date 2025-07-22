@@ -11,6 +11,7 @@ import org.skypro.recommendService.DTO.QueryObject;
 import org.skypro.recommendService.DTO.RecommendationObject;
 import org.skypro.recommendService.model.DynamicRecommendationRule;
 import org.skypro.recommendService.repository.DynamicRecommendationRuleRepository;
+import org.skypro.recommendService.repository.DynamicRuleStatRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collections;
@@ -33,6 +34,9 @@ public class DynamicRecommendationServiceTest {
     private JdbcTemplate jdbcTemplate;
     @Mock
     private ObjectMapper objectMapper;
+    @Mock
+    private DynamicRuleStatRepository dynamicRuleStatRepository;
+
 
     private DynamicRecommendationService service;
 
@@ -41,6 +45,7 @@ public class DynamicRecommendationServiceTest {
         service = new DynamicRecommendationService(
                 Collections.emptyList(),
                 ruleRepository,
+                dynamicRuleStatRepository,
                 jdbcTemplate,
                 objectMapper
         );
