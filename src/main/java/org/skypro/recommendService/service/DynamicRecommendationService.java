@@ -64,7 +64,7 @@ public class DynamicRecommendationService {
         return allRecommendations;
     }
 
-    private boolean evaluateQuery(QueryObject query, UUID userId) {
+    boolean evaluateQuery(QueryObject query, UUID userId) {
         boolean result;
         switch (query.getQuery()) {
             case "USER_OF":

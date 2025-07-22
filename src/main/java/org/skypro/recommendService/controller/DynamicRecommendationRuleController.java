@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class DynamicRecommendationRuleController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<?> createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
+    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
         DynamicRecommendationRule entity = new DynamicRecommendationRule();
         entity.setProductId(dto.getProductId());
         entity.setProductName(dto.getProductName());
@@ -49,31 +50,29 @@ public class DynamicRecommendationRuleController {
                 .buildAndExpand(saved.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(saved);
+        return saved;
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllRules() throws JsonProcessingException {
+    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules() throws JsonProcessingException {
         List<DynamicRecommendationRule> rules = repository.findAll();
-        List<DynamicRecommendationRuleDto> dtos = rules.stream().map(r -> {
-            try {
-                List<QueryObject> queries = objectMapper.readValue(r.getRule(), new TypeReference<List<QueryObject>>() {});
-                DynamicRecommendationRuleDto dto = new DynamicRecommendationRuleDto();
-                dto.setProductId(r.getProductId());
-                dto.setProductText(r.getProductText());
-                dto.setProductName(r.getProductName());
-                dto.setRule(queries);
+        List<DynamicRecommendationRuleDto> dtos = new ArrayList<>();
+        for (DynamicRecommendationRule r : rules) {
+            List<QueryObject> queries = objectMapper.readValue(r.getRule(), new TypeReference<List<QueryObject>>() {});
+            DynamicRecommendationRuleDto dto = new DynamicRecommendationRuleDto();
+            dto.setProductId(r.getProductId());
+            dto.setProductText(r.getProductText());
+            dto.setProductName(r.getProductName());
+            dto.setRule(queries);
 
-                int count = dynamicRuleStatRepository.countByRuleId(r.getId());
-                dynamicRuleStatRepository.save(new DynamicRuleStat(r.getId(), count + 1));
+            int count = dynamicRuleStatRepository.countByRuleId(r.getId());
+            dynamicRuleStatRepository.save(new DynamicRuleStat(r.getId(), count + 1));
 
-                return dto;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).toList();
-        return ResponseEntity.ok(Map.of("data", dtos));
+            dtos.add(dto);
+        }
+        return Map.of("data", dtos);
     }
+
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteRule(@PathVariable String productId) {
@@ -84,9 +83,9 @@ public class DynamicRecommendationRuleController {
     }
 
     @GetMapping("/stat")
-    public ResponseEntity<?> getRuleStat() {
+    public Map<String, List<DynamicRuleStat>> getRuleStat() {
         List<DynamicRuleStat> rules = dynamicRuleStatRepository.findAll();
-        return ResponseEntity.ok(Map.of("stats", rules));
+        return Map.of("stats", rules);
     }
 
 }
