@@ -1,34 +1,25 @@
 package org.skypro.recommendService.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.skypro.recommendService.DTO.DynamicRecommendationRuleDto;
-import org.skypro.recommendService.DTO.QueryObject;
 import org.skypro.recommendService.model.DynamicRecommendationRule;
 import org.skypro.recommendService.model.DynamicRuleStat;
-import org.skypro.recommendService.repository.DynamicRecommendationRuleRepository;
-import org.skypro.recommendService.repository.DynamicRuleStatRepository;
 import org.skypro.recommendService.service.DynamicRecommendationService;
-import org.springframework.http.ResponseEntity;
+import org.skypro.recommendService.service.DynamicRuleStatService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rule")
 public class DynamicRecommendationRuleController {
-    private final DynamicRuleStatRepository dynamicRuleStatRepository;
     private final DynamicRecommendationService service;
+    private final DynamicRuleStatService statService;
 
-    public DynamicRecommendationRuleController(DynamicRuleStatRepository dynamicRuleStatRepository, DynamicRecommendationService service) {
-        this.dynamicRuleStatRepository = dynamicRuleStatRepository;
+    public DynamicRecommendationRuleController(DynamicRecommendationService service, DynamicRuleStatService statService) {
         this.service = service;
+        this.statService = statService;
     }
 
     @PostMapping("/new")
@@ -43,14 +34,13 @@ public class DynamicRecommendationRuleController {
 
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deleteRule(@PathVariable String productId) {
-        return ResponseEntity.ok(service.deleteRule(productId));
+    public void deleteRule(@PathVariable String productId) {
+        service.deleteRule(productId);
     }
 
     @GetMapping("/stat")
     public Map<String, List<DynamicRuleStat>> getRuleStat() {
-        List<DynamicRuleStat> rules = dynamicRuleStatRepository.findAll();
-        return Map.of("stats", rules);
+        return statService.getRuleStat();
     }
 
 }
