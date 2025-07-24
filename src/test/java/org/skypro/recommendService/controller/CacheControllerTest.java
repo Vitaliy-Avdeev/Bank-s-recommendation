@@ -2,13 +2,15 @@ package org.skypro.recommendService.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
 import org.skypro.recommendService.service.ManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +31,7 @@ class CacheControllerTest {
 
     @Test
     void testClearCaches() throws Exception {
+
         mockMvc.perform(post("/management/clear-caches"))
                 .andExpect(status().isOk());
         Mockito.verify(managementService).clearCache();
@@ -43,5 +46,14 @@ class CacheControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("TestApp"))
                 .andExpect(jsonPath("$[0].version").value("1.0"));
+    }
+
+    @org.junit.jupiter.api.Test
+    public void testGetServiceInfo() throws Exception {
+        when(buildProperties.getName()).thenReturn("recommendService");
+        when(buildProperties.getVersion()).thenReturn("0.0.1-SNAPSHOT");
+
+        mockMvc.perform(get("/management/info"))
+                .andExpect(status().isOk());
     }
 }
