@@ -209,11 +209,16 @@ public class DynamicRecommendationService {
         return result;
     }
 
-    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules() throws JsonProcessingException{
+    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules(){
         List<DynamicRecommendationRule> rules = dynamicRuleRepository.findAll();
         List<DynamicRecommendationRuleDto> dtos = new ArrayList<>();
         for (DynamicRecommendationRule r : rules) {
-            List<QueryObject> queries = objectMapper.readValue(r.getRule(), new TypeReference<List<QueryObject>>() {});
+            List<QueryObject> queries = null;
+            try {
+                queries = objectMapper.readValue(r.getRule(), new TypeReference<List<QueryObject>>() {});
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             DynamicRecommendationRuleDto dto = new DynamicRecommendationRuleDto();
             dto.setProductId(r.getProductId());
             dto.setProductText(r.getProductText());

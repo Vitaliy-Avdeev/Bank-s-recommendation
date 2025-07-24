@@ -6,6 +6,9 @@ import org.skypro.recommendService.model.DynamicRecommendationRule;
 import org.skypro.recommendService.model.DynamicRuleStat;
 import org.skypro.recommendService.service.DynamicRecommendationService;
 import org.skypro.recommendService.service.DynamicRuleStatService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,14 +31,14 @@ public class DynamicRecommendationRuleController {
     }
 
     @GetMapping()
-    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules() throws JsonProcessingException {
+    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules(){
         return service.getAllRules();
     }
 
 
-    @DeleteMapping("/{productId}")
-    public void deleteRule(@PathVariable String productId) {
-        service.deleteRule(productId);
+    @DeleteMapping("delete/{productId}")
+    public ResponseEntity<?> deleteRule(@PathVariable String productId) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(service.deleteRule(productId));
     }
 
     @GetMapping("/stat")
