@@ -26,7 +26,8 @@ public class DynamicRecommendationRuleController {
     }
 
     @PostMapping("/new")
-    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto){
         return service.createRule(dto);
     }
 
@@ -37,8 +38,9 @@ public class DynamicRecommendationRuleController {
 
 
     @DeleteMapping("delete/{productId}")
-    public ResponseEntity<?> deleteRule(@PathVariable String productId) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(service.deleteRule(productId));
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRule(@PathVariable String productId) {
+        service.deleteRule(productId);
     }
 
     @GetMapping("/stat")

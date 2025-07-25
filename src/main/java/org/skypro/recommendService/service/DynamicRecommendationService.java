@@ -233,12 +233,16 @@ public class DynamicRecommendationService {
         return Map.of("data", dtos);
     }
 
-    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
+    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) {
         DynamicRecommendationRule entity = new DynamicRecommendationRule();
         entity.setProductId(dto.getProductId());
         entity.setProductName(dto.getProductName());
         entity.setProductText(dto.getProductText());
-        entity.setRule(objectMapper.writeValueAsString(dto.getRule()));
+        try {
+            entity.setRule(objectMapper.writeValueAsString(dto.getRule()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         DynamicRecommendationRule saved = dynamicRuleRepository.save(entity);
 
         dynamicRuleStatRepository.save(new DynamicRuleStat(entity.getId(), 0));
@@ -252,10 +256,9 @@ public class DynamicRecommendationService {
         return saved;
     }
 
-    public ResponseEntity<?> deleteRule(@PathVariable String productId) {
+    public void deleteRule(@PathVariable String productId) {
         String id = dynamicRuleRepository.getIdByProductId(productId);
         dynamicRuleStatRepository.deleteByRuleId(id);
         dynamicRuleRepository.deleteByProductId(productId);
-        return ResponseEntity.ok().build();
     }
 }
