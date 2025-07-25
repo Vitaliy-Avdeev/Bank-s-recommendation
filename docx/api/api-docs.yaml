@@ -1,15 +1,19 @@
 openapi: 3.1.0
 info:
-  title: OpenAPI definition
-  version: v0
+  title: Сервис для работы с банковскими продуктами.
+  description: Сервис предназначен для сотрудников банка. Он позволяет выполнить персонализированный
+    подбор услуг и рекомендовать новые банковские продукты/услуги клиентам банка.
+  version: 0.0.1-SNAPSHOT
 servers:
-  - url: http://localhost:8080
-    description: Generated server url
+- description: Development
+tags:
+- name: Управление системой.
+  description: В данном разделе можно узнать информацию о системе и сбросить кеш.
 paths:
   /rule/new:
     post:
       tags:
-        - dynamic-recommendation-rule-controller
+      - dynamic-recommendation-rule-controller
       operationId: createRule
       requestBody:
         content:
@@ -23,11 +27,14 @@ paths:
           content:
             '*/*':
               schema:
-                type: object
+                $ref: "#/components/schemas/DynamicRecommendationRule"
   /management/clear-caches:
     post:
       tags:
-        - cache-controller
+      - Управление системой.
+      summary: Сброс кеша рекомендаций.
+      description: "Данный эндпоинт позволяет очистить все закешированные результа\
+        ты, что означает обновление базы данных."
       operationId: clearCaches
       responses:
         "200":
@@ -35,11 +42,13 @@ paths:
           content:
             '*/*':
               schema:
-                type: object
+                type: array
+                items:
+                  type: object
   /rule:
     get:
       tags:
-        - dynamic-recommendation-rule-controller
+      - dynamic-recommendation-rule-controller
       operationId: getAllRules
       responses:
         "200":
@@ -48,18 +57,38 @@ paths:
             '*/*':
               schema:
                 type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/DynamicRecommendationRuleDto"
+  /rule/stat:
+    get:
+      tags:
+      - dynamic-recommendation-rule-controller
+      operationId: getRuleStat
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/DynamicRuleStat"
   /recommendation/{userId}:
     get:
       tags:
-        - recommendation-controller
+      - recommendation-controller
       operationId: getListOfRecommendation
       parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
           description: OK
@@ -74,7 +103,10 @@ paths:
   /management/info:
     get:
       tags:
-        - cache-controller
+      - Управление системой.
+      summary: Информация о системе.
+      description: Данный эндпоинт позволяет получить информацию о названии и версии
+        системы.
       operationId: getServiceInfo
       responses:
         "200":
@@ -82,18 +114,20 @@ paths:
           content:
             '*/*':
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: "#/components/schemas/InfoDTO"
   /rule/{productId}:
     delete:
       tags:
-        - dynamic-recommendation-rule-controller
+      - dynamic-recommendation-rule-controller
       operationId: deleteRule
       parameters:
-        - name: productId
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -127,6 +161,27 @@ components:
             type: string
         negate:
           type: boolean
+    DynamicRecommendationRule:
+      type: object
+      properties:
+        id:
+          type: string
+        productName:
+          type: string
+        productId:
+          type: string
+        productText:
+          type: string
+        rule:
+          type: string
+    DynamicRuleStat:
+      type: object
+      properties:
+        ruleId:
+          type: string
+        count:
+          type: integer
+          format: int32
     RecommendationObject:
       type: object
       properties:
@@ -136,4 +191,11 @@ components:
         name:
           type: string
         text:
+          type: string
+    InfoDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
           type: string
