@@ -1,91 +1,51 @@
 package org.skypro.recommendService.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.skypro.recommendService.DTO.DynamicRecommendationRuleDto;
-import org.skypro.recommendService.DTO.QueryObject;
 import org.skypro.recommendService.model.DynamicRecommendationRule;
 import org.skypro.recommendService.model.DynamicRuleStat;
-import org.skypro.recommendService.repository.DynamicRecommendationRuleRepository;
-import org.skypro.recommendService.repository.DynamicRuleStatRepository;
+import org.skypro.recommendService.service.DynamicRecommendationService;
+import org.skypro.recommendService.service.DynamicRuleStatService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rule")
 public class DynamicRecommendationRuleController {
+    private final DynamicRecommendationService service;
+    private final DynamicRuleStatService statService;
 
-    private final DynamicRecommendationRuleRepository repository;
-    private final ObjectMapper objectMapper;
-    private final DynamicRuleStatRepository dynamicRuleStatRepository;
-
-    public DynamicRecommendationRuleController(DynamicRecommendationRuleRepository repository, ObjectMapper objectMapper, DynamicRuleStatRepository dynamicRuleStatRepository) {
-        this.repository = repository;
-        this.objectMapper = objectMapper;
-        this.dynamicRuleStatRepository = dynamicRuleStatRepository;
+    public DynamicRecommendationRuleController(DynamicRecommendationService service, DynamicRuleStatService statService) {
+        this.service = service;
+        this.statService = statService;
     }
 
     @PostMapping("/new")
-    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) throws JsonProcessingException {
-        DynamicRecommendationRule entity = new DynamicRecommendationRule();
-        entity.setProductId(dto.getProductId());
-        entity.setProductName(dto.getProductName());
-        entity.setProductText(dto.getProductText());
-        entity.setRule(objectMapper.writeValueAsString(dto.getRule()));
-        DynamicRecommendationRule saved = repository.save(entity);
-
-        dynamicRuleStatRepository.save(new DynamicRuleStat(entity.getId(), 0));
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(saved.getId())
-                .toUri();
-
-        return saved;
+    @ResponseStatus(HttpStatus.CREATED)
+    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto){
+        return service.createRule(dto);
     }
 
     @GetMapping()
-    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules() throws JsonProcessingException {
-        List<DynamicRecommendationRule> rules = repository.findAll();
-        List<DynamicRecommendationRuleDto> dtos = new ArrayList<>();
-        for (DynamicRecommendationRule r : rules) {
-            List<QueryObject> queries = objectMapper.readValue(r.getRule(), new TypeReference<List<QueryObject>>() {});
-            DynamicRecommendationRuleDto dto = new DynamicRecommendationRuleDto();
-            dto.setProductId(r.getProductId());
-            dto.setProductText(r.getProductText());
-            dto.setProductName(r.getProductName());
-            dto.setRule(queries);
-
-            int count = dynamicRuleStatRepository.countByRuleId(r.getId());
-            dynamicRuleStatRepository.save(new DynamicRuleStat(r.getId(), count + 1));
-
-            dtos.add(dto);
-        }
-        return Map.of("data", dtos);
+    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules(){
+        return service.getAllRules();
     }
 
 
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deleteRule(@PathVariable String productId) {
-        String id = repository.getIdByProductId(productId);
-        dynamicRuleStatRepository.deleteByRuleId(id);
-        repository.deleteByProductId(productId);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("delete/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRule(@PathVariable String productId) {
+        service.deleteRule(productId);
     }
 
     @GetMapping("/stat")
     public Map<String, List<DynamicRuleStat>> getRuleStat() {
-        List<DynamicRuleStat> rules = dynamicRuleStatRepository.findAll();
-        return Map.of("stats", rules);
+        return statService.getRuleStat();
     }
 
 }

@@ -1,4 +1,4 @@
-package org.skypro.recommendService.controller;
+package org.skypro.recommendService.exeptions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;

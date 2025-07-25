@@ -1,18 +1,27 @@
 package org.skypro.recommendService.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.skypro.recommendService.DTO.DynamicRecommendationRuleDto;
 import org.skypro.recommendService.DTO.QueryObject;
 import org.skypro.recommendService.DTO.RecommendationObject;
 import org.skypro.recommendService.component.RecommendationRuleSet;
 import org.skypro.recommendService.model.DynamicRecommendationRule;
+import org.skypro.recommendService.model.DynamicRuleStat;
 import org.skypro.recommendService.repository.DynamicRecommendationRuleRepository;
+import org.skypro.recommendService.repository.DynamicRuleStatRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +32,7 @@ public class DynamicRecommendationService {
     private final List<RecommendationRuleSet> recommendations;
 
     private final DynamicRecommendationRuleRepository dynamicRuleRepository;
+    private final DynamicRuleStatRepository dynamicRuleStatRepository;
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
 
@@ -30,9 +40,11 @@ public class DynamicRecommendationService {
     private final Cache<String, Boolean> activeUserOfCache = Caffeine.newBuilder().maximumSize(10000).build();
     private final Cache<String, Boolean> transactionCompareCache = Caffeine.newBuilder().maximumSize(10000).build();
 
-    public DynamicRecommendationService(List<RecommendationRuleSet> recommendations, DynamicRecommendationRuleRepository dynamicRuleRepository, @Qualifier("recommendationsJdbcTemplate") JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
+    public DynamicRecommendationService(List<RecommendationRuleSet> recommendations, DynamicRecommendationRuleRepository dynamicRuleRepository,
+                                        DynamicRuleStatRepository dynamicRuleStatRepository, @Qualifier("recommendationsJdbcTemplate") JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
         this.recommendations = recommendations;
         this.dynamicRuleRepository = dynamicRuleRepository;
+        this.dynamicRuleStatRepository = dynamicRuleStatRepository;
         this.jdbcTemplate = jdbcTemplate;
         this.objectMapper = objectMapper;
     }
@@ -195,5 +207,58 @@ public class DynamicRecommendationService {
 
         transactionCompareCache.put(key, result);
         return result;
+    }
+
+    public Map<String, List<DynamicRecommendationRuleDto>> getAllRules(){
+        List<DynamicRecommendationRule> rules = dynamicRuleRepository.findAll();
+        List<DynamicRecommendationRuleDto> dtos = new ArrayList<>();
+        for (DynamicRecommendationRule r : rules) {
+            List<QueryObject> queries = null;
+            try {
+                queries = objectMapper.readValue(r.getRule(), new TypeReference<List<QueryObject>>() {});
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            DynamicRecommendationRuleDto dto = new DynamicRecommendationRuleDto();
+            dto.setProductId(r.getProductId());
+            dto.setProductText(r.getProductText());
+            dto.setProductName(r.getProductName());
+            dto.setRule(queries);
+
+            int count = dynamicRuleStatRepository.countByRuleId(r.getId());
+            dynamicRuleStatRepository.save(new DynamicRuleStat(r.getId(), count + 1));
+
+            dtos.add(dto);
+        }
+        return Map.of("data", dtos);
+    }
+
+    public DynamicRecommendationRule createRule(@RequestBody DynamicRecommendationRuleDto dto) {
+        DynamicRecommendationRule entity = new DynamicRecommendationRule();
+        entity.setProductId(dto.getProductId());
+        entity.setProductName(dto.getProductName());
+        entity.setProductText(dto.getProductText());
+        try {
+            entity.setRule(objectMapper.writeValueAsString(dto.getRule()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        DynamicRecommendationRule saved = dynamicRuleRepository.save(entity);
+
+        dynamicRuleStatRepository.save(new DynamicRuleStat(entity.getId(), 0));
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(saved.getId())
+                .toUri();
+
+        return saved;
+    }
+
+    public void deleteRule(@PathVariable String productId) {
+        String id = dynamicRuleRepository.getIdByProductId(productId);
+        dynamicRuleStatRepository.deleteByRuleId(id);
+        dynamicRuleRepository.deleteByProductId(productId);
     }
 }
